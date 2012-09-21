@@ -23,6 +23,10 @@ $(document).bind("mobileinit", function(){
 	</div>
 	<div data-role="content">
 		<div class="content-primary">
+            <p>
+                The file you upload should be the result of the following command:
+                <code>hdhomerun_config {{ tuner_hdid }} scan /tuner0 channels.txt</code>
+            </p>
 			<form action="{% url channels-upload tuner_hdid %}" method="POST" enctype="multipart/form-data" data-ajax="false">
                 {% csrf_token %}
                 <div data-role="fieldcontain">
