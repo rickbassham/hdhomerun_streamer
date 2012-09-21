@@ -23,7 +23,7 @@ $(document).bind("mobileinit", function(){
 	</div>
 	<div data-role="content">
 		<div class="content-primary">
-			<form action="upload" method="POST" enctype="multipart/form-data" data-ajax="false">
+			<form action="{% url channels-upload tuner_hdid %}" method="POST" enctype="multipart/form-data" data-ajax="false">
                 {% csrf_token %}
                 <div data-role="fieldcontain">
                     <label for="channels">Channels:</label>

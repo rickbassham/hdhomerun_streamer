@@ -10,6 +10,7 @@ from hdhomerun.models import Device
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
+from django.core.urlresolvers import reverse
 
 def index(request):
     t = loader.get_template('hdhomerun/index.htm')
@@ -47,7 +48,7 @@ def setup(request):
     all_devices = Device.objects.all()
 
     if (all_devices.count() == 1):
-        return HttpResponseRedirect('../%s/channels/index' % all_devices[0].hdid)
+        return HttpResponseRedirect(reverse('channels-index', args=[ all_devices[0].hdid ]))
 
-    return HttpResponseRedirect('../hdhomerun/index')
+    return HttpResponseRedirect(reverse('hdhomerun-index'))
 

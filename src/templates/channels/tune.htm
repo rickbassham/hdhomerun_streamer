@@ -24,7 +24,7 @@ $(document).bind("mobileinit", function(){
 	<div data-role="content">
 		<div class="content-primary">
             <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="{{ video_url }}" data-ajax="false">Watch</a>
-            <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="../../stop/{{vlc_pid}}" data-ajax="false">Stop</a>
+            <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="{% url channels-stop hdid=tuner_hdid vlc_pid=vlc_pid %}" data-ajax="false">Stop</a>
 		</div>
 	</div>
 </div>

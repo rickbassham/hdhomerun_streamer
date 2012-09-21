@@ -24,11 +24,12 @@ $(document).bind("mobileinit", function(){
 	<div data-role="content">
 		<div class="content-primary">
 			<ul data-role="listview" data-inset="true" data-filter="true">
+                <li data-role="list-divider">hdhomerun</li>
+				<li><a data-ajax="false" href="{% url hdhomerun-setup %}">Scan for new devices...</a></li>
                 {% for d in devices %}
                 <li data-role="list-divider">{{d.hdid}}</li>
-				<li><a data-ajax="false" href="../{{d.hdid}}/channels/index">View Channels</a></li>
-				<li><a data-ajax="false" href="../{{d.hdid}}/channels/upload">Upload Channel List</a></li>
-				<li><a data-ajax="false" href="../{{d.hdid}}/channels/scan">Scan for Channels</a></li>
+				<li><a data-ajax="false" href="{% url channels-index d.hdid %}">View Channels</a></li>
+				<li><a data-ajax="false" href="{% url channels-upload d.hdid %}">Upload Channel List</a></li>
                 {% endfor %}
 			</ul>
 		</div>

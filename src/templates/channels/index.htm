@@ -24,8 +24,11 @@ $(document).bind("mobileinit", function(){
 	<div data-role="content">
 		<div class="content-primary">
 			<ul data-role="listview" data-inset="true" data-filter="true">
+                <li data-role="list-divider">hdhomerun - {{tuner_hdid}}</li>
                 {% for c in channels %}
-				<li><a data-ajax="false" href="tune/{{c.channel}}/{{c.program}}">{{ c.desc }}</a></li>
+				<li><a data-ajax="false" href="{% url channels-tune hdid=tuner_hdid channel=c.channel program=c.program %}">{{ c.desc }}</a></li>
+                {% empty %}
+				<li><a data-ajax="false" href="{% url channels-upload tuner_hdid %}">Upload channels file...</a></li>
                 {% endfor %}
 			</ul>
 		</div>

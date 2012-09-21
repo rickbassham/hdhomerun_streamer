@@ -5,11 +5,14 @@ import re
 import subprocess
 import signal
 import time
+import logging
+import socket
 
 from channels.models import Channel
 from hdhomerun.models import Device
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
+from django.core.urlresolvers import reverse
 
 def index(request, hdid):
     t = loader.get_template('channels/index.htm')
@@ -27,19 +30,21 @@ def stop(request, hdid, vlc_pid):
     except OSError:
         pass
 
-    return HttpResponseRedirect('../index')
+    return HttpResponseRedirect(reverse('channels-index', args=[ hdid ]))
 
 def tune(request, hdid, channel, program):
-    ip = '10.0.0.45'
+    stream_ip = getIpAddress()
     port = '44322'
     tuner = '0'
+    vlc_port = '8282'
 
     d = Device.objects.get(hdid=hdid)
 
     command = [
             "cvlc",
             "rtp://@:%s" % port,
-            "--sout", "#transcode{vcodec=h264,width=512,vfilter=cropadd{croptop=64,cropbottom=64},vb=768,fps=25,venc=x264{vbv-bufsize=8192,vbv-maxrate=768,partitions=all,level=12,no-cabac,subme=7,threads=2,ref=2,mixed-refs=1,min-keyint=1,keyint=50,qpmax=51,bframes=0},acodec=mp4a,ab=48,channels=1,samplerate=44100,deinterlace,audio-sync}:standard{access=http{mime=video/mp4},mux=ts,dst=0.0.0.0:8282/stream.mp4}"
+            "--sout",
+            "#transcode{vcodec=h264,width=512,vb=768,fps=25,venc=x264{vbv-bufsize=8192,vbv-maxrate=768,partitions=all,level=12,no-cabac,subme=7,threads=2,ref=2,mixed-refs=1,min-keyint=1,keyint=50,qpmax=51,bframes=0},acodec=mp4a,ab=48,channels=1,samplerate=44100,deinterlace,audio-sync}:standard{access=http{mime=video/mp4},mux=ts,dst=0.0.0.0:%s/stream.mp4}" % vlc_port
         ]
 
     with open(os.devnull, "w") as fnull:
@@ -53,14 +58,14 @@ def tune(request, hdid, channel, program):
         command = [ 'hdhomerun_config', hdid, 'set', '/tuner%s/program' % tuner, program ]
         subprocess.call(command, stdout=fnull, stderr=fnull)
 
-        command = [ 'hdhomerun_config', hdid, 'set', '/tuner%s/target' % tuner, 'rtp://%s:%s' % (ip, port) ]
+        command = [ 'hdhomerun_config', hdid, 'set', '/tuner%s/target' % tuner, 'rtp://%s:%s' % (stream_ip, port) ]
         subprocess.call(command, stdout=fnull, stderr=fnull)
 
     t = loader.get_template('channels/tune.htm')
     c = RequestContext(request, {
         'tuner_hdid': hdid,
         'vlc_pid': vlc_proc.pid,
-        'video_url': 'http://%s:8282/stream.mp4' % ip,
+        'video_url': 'http://%s:8282/stream.mp4' % stream_ip,
     })
 
     return HttpResponse(t.render(c))
@@ -105,4 +110,12 @@ def resetChannelList(hdid, channelList):
             if m:
                 c = Channel(device=device, channel=int(current_channel), program=int(m.group(1)), desc=m.group(2))
                 c.save()
+
+def getIpAddress():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("google.com",80))
+    ip = s.getsockname()[0]
+    s.close()
+
+    return ip
 
