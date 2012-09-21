@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>{{ tuner_hdid }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ STATIC_URL }}jquery.mobile-1.1.1.min.css" />
+	<script src="{{ STATIC_URL }}jquery-1.8.1.min.js"></script>
+    <script>
+$(document).bind("mobileinit", function(){
+  $.extend(  $.mobile , {
+    defaultDialogTransition: 'none',
+    defaultPageTransition: 'none',
+  });
+});
+    </script>
+	<script src="{{ STATIC_URL }}jquery.mobile-1.1.1.min.js"></script>
+</head>
+
+<body>
+<div data-role="page" id="page" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>{{ tuner_hdid }}</h1>
+	</div>
+	<div data-role="content">
+		<div class="content-primary">
+			<ul data-role="listview" data-inset="true" data-filter="true">
+                {% for c in channels %}
+				<li><a data-ajax="false" href="tune/{{c.channel}}/{{c.program}}">{{ c.desc }}</a></li>
+                {% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+</body>
+</html>

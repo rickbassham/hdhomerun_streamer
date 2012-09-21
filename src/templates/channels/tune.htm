@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>{{ tuner_hdid }}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{ STATIC_URL }}jquery.mobile-1.1.1.min.css" />
+	<script src="{{ STATIC_URL }}jquery-1.8.1.min.js"></script>
+    <script>
+$(document).bind("mobileinit", function(){
+  $.extend(  $.mobile , {
+    defaultDialogTransition: 'none',
+    defaultPageTransition: 'none',
+  });
+});
+    </script>
+	<script src="{{ STATIC_URL }}jquery.mobile-1.1.1.min.js"></script>
+</head>
+
+<body>
+<div data-role="page" id="page" data-add-back-btn="true">
+	<div data-role="header">
+		<h1>{{ tuner_hdid }} - {{vlc_pid}}</h1>
+	</div>
+	<div data-role="content">
+		<div class="content-primary">
+            <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="{{ video_url }}" data-ajax="false">Watch</a>
+            <a data-role="button" data-icon="arrow-r" data-iconpos="right" href="../../stop/{{vlc_pid}}" data-ajax="false">Stop</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>
